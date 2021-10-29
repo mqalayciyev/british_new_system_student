@@ -11,6 +11,7 @@ class MyTasks extends React.Component {
         super(props)
         this.state = {
             tasks: [],
+            display: true
         }
     }
     componentDidMount = () => {
@@ -46,7 +47,7 @@ class MyTasks extends React.Component {
                 return Promise.reject(error)
             }
         )
-        let response = await axios.post(`http://127.0.0.1:8000/api/students/tasks/status/${id}`)
+        let response = await axios.post(`${process.env.REACT_APP_API_URL}/students/tasks/status/${id}`)
         
         if (response.data.status === 'success') {
             NotificationManager.success('Task statusu deyisdirildi', 'Success', 5000);
@@ -67,11 +68,12 @@ class MyTasks extends React.Component {
                 return Promise.reject(error)
             }
         )
-        let response = await axios.get(`http://127.0.0.1:8000/api/students/tasks`)
+        let response = await axios.get(`${process.env.REACT_APP_API_URL}/students/tasks`)
 
         if (response.data.status === 'success') {
             this.setState({
-                tasks: response.data.tasks
+                tasks: response.data.tasks,
+                display: false
             })
         }
     }
@@ -86,7 +88,7 @@ class MyTasks extends React.Component {
                 return Promise.reject(error)
             }
         )
-        let response = await axios.delete(`http://127.0.0.1:8000/api/students/tasks/${value.id}`)
+        let response = await axios.delete(`${process.env.REACT_APP_API_URL}/students/tasks/${value.id}`)
 
         if (response.data.status === 'success') {
             NotificationManager.warning('Task silindi', 'Warning', 5000);
@@ -118,6 +120,13 @@ class MyTasks extends React.Component {
 					</div>
 					<div className="row mt-3">
 						<div className="col-12">
+                        <div className="loading" style={{ display: this.state.display ? 'block' : 'none' }}>
+                                <div className="text-center">
+                                    <span>
+                                        Loading...
+                                    </span>
+                                </div>
+                            </div>
 							<div className="table-responsive bg-white m-0 p-3 rounded shadow">
 								<table className="table table-bordered m-0">
 									<thead>

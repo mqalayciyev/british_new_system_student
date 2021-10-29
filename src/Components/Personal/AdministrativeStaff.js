@@ -7,6 +7,7 @@ export default class AdministrativeStaff extends Component {
         super(props)
         this.state = {
             managers: [],
+            display: true
         }
     }
     componentDidMount = () => {
@@ -23,10 +24,11 @@ export default class AdministrativeStaff extends Component {
                 return Promise.reject(error)
             }
         )
-        let response = await axios.get(`http://127.0.0.1:8000/api/students/manager`)
+        let response = await axios.get(`${process.env.REACT_APP_API_URL}/students/manager`)
         if (response.data.status === 'success') {
             this.setState({
-                managers: response.data.managers
+                managers: response.data.managers,
+                display: false
             })
         }
     }
@@ -44,6 +46,13 @@ export default class AdministrativeStaff extends Component {
                         </div>
                         <div className="row mt-3">
                             <div className="col-12">
+                            <div className="loading" style={{ display: this.state.display ? 'block' : 'none' }}>
+                                <div className="text-center">
+                                    <span>
+                                        Loading...
+                                    </span>
+                                </div>
+                            </div>
                                 <div className="table-responsive bg-white m-0 p-3 rounded shadow">
                                     <table class="table table-bordered m-0">
                                         <thead>
@@ -63,7 +72,7 @@ export default class AdministrativeStaff extends Component {
                                                 return (
                                                     <tr key={index}>
                                                         <td>
-                                                            <img className="rounded-circle h-100 w-100" style={{ maxWidth: '100px', maxHeight: '100px' }} src={value.image ? value.image : img} alt='account' />
+                                                            <img className="rounded-circle h-100 w-100" style={{ maxWidth: '100px', maxHeight: '100px' }} src={value.image ?process.env.REACT_APP_URL + '/' + value.image : img} alt='account' />
                                                         </td>
                                                         <td>
                                                             {value.first_name} {value.last_name}

@@ -22,10 +22,13 @@ import Announcements from './Components/Personal/Announcements';
 import AdministrativeStaff from './Components/Personal/AdministrativeStaff';
 import AttendanceMap from './Components/Study/AttendanceMap';
 import Exams from './Components/Study/Exams';
+import ExamStart from './Components/Study/ExamStart';
+import TestStart from './Components/Study/TestStart';
 import Test from './Components/Study/Test';
 import Lessons from './Components/Study/Lessons';
 import ApplyToCourse from './Components/Study/ApplyToCourse';
-import TestScores from './Components/Study/TestScores';
+import TestResults from './Components/Study/TestResults';
+import ExamResults from './Components/Study/ExamResults';
 
 import Audio from './Components/Stuff/Audio';
 import Books from './Components/Stuff/Books';
@@ -34,9 +37,10 @@ import Video from './Components/Stuff/Video';
 
 import NotFound from './NotFound';
 
+import Notifications from './Components/Notifications';
+
 
 import Footer from './Components/Footer';
-// import Preloader from './Components/Preloader';
 import Header from './Components/Header';
 import Sidebar from './Components/Sidebar';
 
@@ -75,15 +79,18 @@ class App extends React.Component {
                                 <Route path={`/AdministrativeStaff`} component={AdministrativeStaff} />
                                 <Route path={`/AttendanceMap`} component={AttendanceMap} />
                                 <Route path={`/Lessons`} component={Lessons} />
-                                <Route path={`/TestScores`} component={TestScores} />
+                                <Route path={`/TestResults`} component={TestResults} />
+                                <Route path={`/ExamResults`} component={ExamResults} />
                                 <Route path={`/Exams`} component={Exams} />
+                                <Route path={`/ExamStart/:id`} component={ExamStart} />
+                                <Route path={`/TestStart/:id`} component={TestStart} />
                                 <Route path={`/Tests`} component={Test} />
                                 <Route path={`/ApplyToCourse`} component={ApplyToCourse} />
                                 <Route path={`/Slides`} component={Slides} />
                                 <Route path={`/Books`} component={Books} />
                                 <Route path={`/Audio`} component={Audio} />
                                 <Route path={`/Video`} component={Video} />
-
+                                <Route path={`/Notifications`} component={Notifications} />
                                 <Route component={NotFound} />
                             </Switch>
                     </div>

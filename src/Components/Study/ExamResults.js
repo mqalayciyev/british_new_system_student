@@ -1,18 +1,20 @@
 import React, { Component } from 'react'
-import ReactTooltip from 'react-tooltip';
 import axios from 'axios';
 import { Link } from "react-router-dom";
-import { NotificationContainer, NotificationManager } from 'react-notifications';
-import 'react-notifications/lib/notifications.css';
-export default class AttendanceMap extends Component {
+import Results from './Results';
+
+export default class ExamResults extends Component {
     constructor(props) {
         super(props)
-        this.state = { display: true, attendance: []};
+        this.state = {
+            results: [],
+            display: true
+        };
     }
     componentDidMount = () => {
-        this.load();
+        this.load()
     }
-    load = async () => {
+    load = async name => {
         let student = JSON.parse(localStorage.getItem('student'))
         axios.interceptors.request.use(
             config => {
@@ -23,29 +25,36 @@ export default class AttendanceMap extends Component {
                 return Promise.reject(error)
             }
         )
-        let response = await axios.get(`${process.env.REACT_APP_API_URL}/students/attendance`)
+        let response = await axios.get(`${process.env.REACT_APP_API_URL}/students/exam_results`)
         if (response.data.status === 'success') {
-            console.log(response.data)
             this.setState({
-                attendance: response.data.attendance,
+                results: response.data.results,
                 display: false
             })
         }
-
     }
-    date(value) {
-        let date = new Date(value)
-        return `${date.getDay()}/${date.getMonth()}/${date.getFullYear()}`
+    removeComponent = () => {
+        this.setState({
+            modal: []
+        })
+    }
+    addComponent = (id) => {
+        
+        let modal = <Results type="exam" id={id} removeComponent={this.removeComponent} />
+
+        this.setState({
+            modal: modal
+        })
     }
     render() {
+        const type = ['Seviyye yoxlanisi', 'Sinaq', 'Sertifikat']
         return (
             <>
-            <ReactTooltip />
             <div className="row">
                 <div className="col-12">
                     <div className="row">
-                        <div className="col-12">
-                            <h4>Exams</h4>
+                        <div className="col-12 col-sm-6">
+                            <h4>Exam Results</h4>
                         </div>
                     </div>
                     <div className="row mt-3">
@@ -61,38 +70,32 @@ export default class AttendanceMap extends Component {
                                 <table class="table table-bordered m-0">
                                     <thead>
                                         <tr>
-                                            <th scope="col">Student</th>
-                                            <th scope="col">Teacher</th>
+                                            <th scope="col">Exam name</th>
+                                            <th scope="col">Exam type</th>
                                             <th scope="col">Lesson</th>
-                                            <th scope="col">Attendance</th>
+                                            <th scope="col">Date</th>
+                                            <th scope="col"></th>
+                                            {/* <th scope="col"><button className="btn Btn32 text-danger"><i class="fas fa-trash"></i></button></th> */}
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {this.state.attendance.length > 0 ? this.state.attendance.map((value, index) => {
-                                                const attendance_days = JSON.parse(value.attendance_days)
-                                                console.log(value.attendance_days)
-                                                let days = []
-                                                for (const [keys, value] of Object.entries(attendance_days)) {
-                                                    let bg = value.status ? 'bg-success' : 'bg-danger'
-                                                    let date = this.date(value.created_at)
-                                                    days.push(<li class={`list-group-item ${bg}`}>{date}</li>)
-                                                }
-                                                return (
+                                        {this.state.results.length > 0 ? this.state.results.map((value, index) => {
+                                            return (
                                                     <tr key={index}>
                                                         <td>
-                                                            {value.student_name}    
+                                                            {value.exam_name}
                                                         </td>
                                                         <td>
-                                                            <Link to={`${ value.teacher}`} >{ value.teacher_name}</Link>
+                                                            {type[value.exam_type]}
                                                         </td>
                                                         <td>
                                                             {value.lesson_name}
                                                         </td>
                                                         <td>
-                                                            <ul class="list-group list-group-horizontal">
-                                                                {days}
-                                                            </ul>
-                                                            
+                                                            {value.created_at}
+                                                        </td>
+                                                        <td className="btnTD text-center">
+                                                            <button className="btn Btn32 btn-success" data-toggle="modal" data-target="#exampleModal" onClick={() => this.addComponent(value.exam)}><i className="fas fa-clipboard-list"></i></button>
                                                         </td>
                                                     </tr>
                                                 )
@@ -100,7 +103,7 @@ export default class AttendanceMap extends Component {
                                                 <tr>
                                                     <td colSpan="12" className="text-center">
                                                         Empty
-                                                        </td>
+                                                    </td>
                                                 </tr>
                                             }
                                     </tbody>
@@ -110,6 +113,9 @@ export default class AttendanceMap extends Component {
                     </div>
                 </div>
             </div>
+            {
+                    this.state.modal
+                }
             </>
         )
     }

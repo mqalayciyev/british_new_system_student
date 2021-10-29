@@ -57,7 +57,7 @@ export default class About extends Component {
 
         formData.append("id", student.user.user_id)
 
-        let response = await axios.post(`http://127.0.0.1:8000/api/students/student/${link}`, formData)
+        let response = await axios.post(`${process.env.REACT_APP_API_URL}/students/student/${link}`, formData)
 
         console.log(response.data)
 
@@ -94,7 +94,7 @@ export default class About extends Component {
             }
         )
 
-        let response = await axios.post(`http://127.0.0.1:8000/api/students/student/delete_image/${student.user.user_id}`)
+        let response = await axios.post(`${process.env.REACT_APP_API_URL}/students/student/delete_image/${student.user.user_id}`)
         if(response.data.status === 'success'){
             NotificationManager.success('Məlumatlar dəyişdirildi.', 'Success', 5000);
             student['user']['user_info'] = response.data.user;
@@ -148,7 +148,7 @@ export default class About extends Component {
                                         cancelBtnBsStyle="danger"
                                         cancelBtnText='No, cancel!'
                                     />
-                                    <img src={this.state.img ? this.state.img : img} style={{ width: '150px', height: '150px' }} className="rounded-circle" alt="user" />
+                                    <img src={this.state.img ? process.env.REACT_APP_URL + '/' + this.state.img : img} style={{ width: '150px', height: '150px' }} className="rounded-circle" alt="user" />
                                 </div>
                             </div>
                         <div className="card-body">

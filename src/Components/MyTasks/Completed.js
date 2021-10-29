@@ -9,6 +9,7 @@ class Completed extends React.Component {
         super(props)
         this.state = {
             tasks: [],
+            display: true
         }
     }
     componentDidMount = () => {
@@ -25,11 +26,12 @@ class Completed extends React.Component {
                 return Promise.reject(error)
             }
         )
-        let response = await axios.post(`http://127.0.0.1:8000/api/students/tasks/completed`)
+        let response = await axios.post(`${process.env.REACT_APP_API_URL}/students/tasks/completed`)
         
         if (response.data.status === 'success') {
             this.setState({
-                tasks: response.data.tasks
+                tasks: response.data.tasks,
+                display: false
             })
         }
     }
@@ -44,7 +46,7 @@ class Completed extends React.Component {
                 return Promise.reject(error)
             }
         )
-        let response = await axios.delete(`http://127.0.0.1:8000/api/students/tasks/${value.id}`)
+        let response = await axios.delete(`${process.env.REACT_APP_API_URL}/students/tasks/${value.id}`)
         
         if (response.data.status === 'success') {
             NotificationManager.warning('Task silindi', 'Warning', 5000);
@@ -76,6 +78,13 @@ class Completed extends React.Component {
 					</div>
 					<div className="row mt-3">
 						<div className="col-12">
+                        <div className="loading" style={{ display: this.state.display ? 'block' : 'none' }}>
+                                <div className="text-center">
+                                    <span>
+                                        Loading...
+                                    </span>
+                                </div>
+                            </div>
 							<div className="table-responsive bg-white m-0 p-3 rounded shadow">
 								<table className="table table-bordered m-0">
 									<thead>

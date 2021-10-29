@@ -30,15 +30,15 @@ export default class Login extends Component {
         var data = serialize($(event.target)[0], { hash: true })
 
 
-        let response = await axios.post(`http://127.0.0.1:8000/api/login`, data)
+        let response = await axios.post(`${process.env.REACT_APP_API_URL}/login`, data)
 
         response = response.data
 
-        console.log(response)
         if(response.status === 'success'){
             NotificationManager.success('Giriş uğurlu', 'Success', 5000);
             localStorage.setItem('student', JSON.stringify(response.session))
             this.context.setSession(response.status, response.session)
+            window.location.href = '/'
         }
         if(response.status === 'warning'){
             let message = response.message;

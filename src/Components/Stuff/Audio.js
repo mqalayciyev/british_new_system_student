@@ -7,7 +7,8 @@ export default class Audio extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            media: []
+            media: [],
+            display: true
         }
     }
     componentDidMount = () => {
@@ -24,11 +25,12 @@ export default class Audio extends Component {
                 return Promise.reject(error)
             }
         )
-        let response = await axios.get(`http://127.0.0.1:8000/api/students/audio`)
+        let response = await axios.get(`${process.env.REACT_APP_API_URL}/students/audio`)
         console.log(response.data)
         if (response.data.status === 'success') {
             this.setState({
-                media: response.data.media
+                media: response.data.media,
+                display: false
             })
         }
 
@@ -60,6 +62,13 @@ export default class Audio extends Component {
                         <div className="row">
                             <div className="col-12 ">
                                 <div className="col-12 bg-white py-2">
+                                <div className="loading" style={{ display: this.state.display ? 'block' : 'none', top: '8px' }}>
+                                    <div className="text-center">
+                                        <span>
+                                            Loading...
+                                        </span>
+                                    </div>
+                                </div>
                                     <div className="row">
                                         {this.state.media.length > 0 ? this.state.media.map((value, index) => {
                                             return (

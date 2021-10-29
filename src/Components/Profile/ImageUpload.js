@@ -72,7 +72,7 @@ class ImageUpload extends React.Component {
 
         formData.append("id", student.user.user_id)
 
-        let response = await axios.post(`http://127.0.0.1:8000/api/managers/manager/${link}`, formData)
+        let response = await axios.post(`${process.env.REACT_APP_API_URL}/managers/manager/${link}`, formData)
 
 
         if (response.data.status === 'success') {

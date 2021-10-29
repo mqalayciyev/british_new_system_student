@@ -8,6 +8,7 @@ export default class Lessons extends Component {
             lessons_p: [],
             lessons_g: [],
             lessons_d: [],
+            display: true
         }
     }
     componentDidMount = () => {
@@ -24,13 +25,14 @@ export default class Lessons extends Component {
                 return Promise.reject(error)
             }
         )
-        let response = await axios.get(`http://127.0.0.1:8000/api/students/lesson`)
+        let response = await axios.get(`${process.env.REACT_APP_API_URL}/students/lesson`)
         console.log(response.data)
         if (response.data.status === 'success') {
             this.setState({
                 lessons_g: response.data.lessons_g,
                 lessons_p: response.data.lessons_p,
-                lessons_d: response.data.lessons_d
+                lessons_d: response.data.lessons_d,
+                display: false
             })
         }
 
@@ -48,6 +50,13 @@ export default class Lessons extends Component {
                         </div>
                         <div className="row mt-3">
                             <div className="col-12 bg-white p-2">
+                            <div className="loading" style={{ display: this.state.display ? 'block' : 'none' }}>
+                                <div className="text-center">
+                                    <span>
+                                        Loading...
+                                    </span>
+                                </div>
+                            </div>
                                 {
                                 this.state.lessons_g.map((value, index) => {
                                     return (

@@ -56,10 +56,10 @@ export default class Add extends Component {
         )
         let response = ""
         if (this.props.edit === 0) {
-            response = await axios.post(`http://127.0.0.1:8000/api/students/tasks`, data)
+            response = await axios.post(`${process.env.REACT_APP_API_URL}/students/tasks`, data)
         }
         else {
-            response = await axios.put(`http://127.0.0.1:8000/api/students/tasks/${this.props.edit}`, data)
+            response = await axios.put(`${process.env.REACT_APP_API_URL}/students/tasks/${this.props.edit}`, data)
         }
         console.log(response.data)
         if (response.data.status === 'success') {

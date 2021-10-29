@@ -1,13 +1,15 @@
 import React, { Component } from 'react'
 import axios from 'axios';
 import { Link } from "react-router-dom";
-export default class Exams extends Component {
+import Results from './Results';
+
+export default class TestScores extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            exams: [],
+            results: [],
             display: true
-        }
+        };
     }
     componentDidMount = () => {
         this.load()
@@ -23,74 +25,73 @@ export default class Exams extends Component {
                 return Promise.reject(error)
             }
         )
-        let response = await axios.get(`${process.env.REACT_APP_API_URL}/students/exam`)
+        let response = await axios.get(`${process.env.REACT_APP_API_URL}/students/test_results`)
         console.log(response.data)
         if (response.data.status === 'success') {
             this.setState({
-                exams: response.data.exams,
+                results: response.data.results,
                 display: false
             })
         }
     }
+    removeComponent = () => {
+        this.setState({
+            modal: []
+        })
+    }
+    addComponent = (id) => {
+        
+        let modal = <Results type="test" id={id} removeComponent={this.removeComponent} />
+
+        this.setState({
+            modal: modal
+        })
+    }
     render() {
-        const type = ['Seviyye yoxlanisi', 'Sinaq', 'Sertifikat']
         return (
             <>
                 <div className="row">
                     <div className="col-12">
                         <div className="row">
                             <div className="col-12 col-sm-6">
-                                <h4>Exams</h4>
+                                <h4>Test Results</h4>
                             </div>
                         </div>
                         <div className="row mt-3">
                             <div className="col-12">
-                            <div className="loading" style={{ display: this.state.display ? 'block' : 'none' }}>
-                                <div className="text-center">
-                                    <span>
-                                        Loading...
-                                    </span>
+                                <div className="loading" style={{ display: this.state.display ? 'block' : 'none' }}>
+                                    <div className="text-center">
+                                        <span>
+                                            Loading...
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
                                 <div className="table-responsive bg-white m-0 p-3 rounded shadow">
                                     <table class="table table-bordered m-0">
                                         <thead>
                                             <tr>
-                                                <th scope="col">Name</th>
-                                                <th scope="col">Level</th>
-                                                <th scope="col">Type</th>
-                                                <th scope="col">Test</th>
-                                                <th scope="col">Time</th>
-                                                <th scope="col">Note</th>
+                                                <th scope="col">Test name</th>
+                                                <th scope="col">Lesson</th>
+                                                <th scope="col">Date</th>
                                                 <th scope="col"></th>
                                                 {/* <th scope="col"><button className="btn Btn32 text-danger"><i class="fas fa-trash"></i></button></th> */}
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {this.state.exams.length > 0 ? this.state.exams.map((value, index) => {
-                                                                                                return (
+                                            {this.state.results.length > 0 ? this.state.results.map((value, index) => {
+                                                return (
                                                     <tr key={index}>
-                                                        <td>
-                                                            {value.name}
-                                                        </td>
-                                                        <td>
-                                                            {value.level_title}
-                                                        </td>
-
-                                                        <td>
-                                                            {type[value.type]}
-                                                        </td>
                                                         <td>
                                                             {value.test_name}
                                                         </td>
                                                         <td>
-                                                            {value.time} minutes
+                                                            {value.lesson_name}
                                                         </td>
                                                         <td>
-                                                            {value.note}
+                                                            {value.created_at}
                                                         </td>
                                                         <td className="btnTD text-center">
-                                                            <Link to={`ExamStart/${value.id}`} className="btn Btn32 btn-success"><i class="fas fa-play"></i></Link>
+                                                            <button className="btn Btn32 btn-success" data-toggle="modal" data-target="#exampleModal" onClick={() => this.addComponent(value.test)}><i className="fas fa-clipboard-list"></i></button>
                                                         </td>
                                                     </tr>
                                                 )
@@ -108,9 +109,9 @@ export default class Exams extends Component {
                         </div>
                     </div>
                 </div>
-                {/* {
+                {
                     this.state.modal
-                } */}
+                }
             </>
         )
     }

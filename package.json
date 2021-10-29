@@ -1,6 +1,7 @@
 {
   "name": "student",
   "version": "0.1.0",
+  "homepage": "http://www.student.todrix.com",
   "private": true,
   "dependencies": {
     "@syncfusion/ej2-react-buttons": "^19.1.63",
@@ -17,6 +18,7 @@
     "form-serialize": "^0.7.2",
     "jquery": "^3.6.0",
     "jquery-ui": "^1.12.1",
+    "js-cookie": "^3.0.1",
     "popper.js": "^1.16.1",
     "query-string": "^7.0.0",
     "react": "^17.0.2",

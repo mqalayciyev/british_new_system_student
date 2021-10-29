@@ -52,7 +52,7 @@ export default class EditProfil extends Component {
             }
         )
 
-        let response = await axios.put(`http://127.0.0.1:8000/api/students/student/${this.props.user.id}`, data)
+        let response = await axios.put(`${process.env.REACT_APP_API_URL}/students/student/${this.props.user.id}`, data)
         if(response.data.status === 'success'){
             NotificationManager.success('Məlumatlar dəyişdirildi.', 'Success', 5000);
             student['user']['user_info'] = response.data.user;

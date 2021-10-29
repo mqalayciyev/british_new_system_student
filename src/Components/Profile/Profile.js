@@ -1,7 +1,5 @@
 import React from 'react';
 import About from './About';
-import History from './History';
-import Payment from './Payment';
 import Tasks from './Tasks';
 import Edit from './EditProfil';
 
@@ -32,8 +30,6 @@ class Profile extends React.Component {
                         <div className="d-block clearfix mt-3">
                             <About user={this.state.user} office={this.state.office} />
                             <Tasks />
-                            <History />
-                            <Payment />
                         </div>
                     </div>
                 </div>

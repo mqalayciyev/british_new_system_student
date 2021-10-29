@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
-import Questions from './Questions';
 import axios from 'axios';
+import { Link } from "react-router-dom";
 export default class Test extends Component {
     constructor(props) {
         super(props)
         this.state = {
             tests: [],
+            display: true
         }
     }
     componentDidMount = () => {
@@ -22,26 +23,14 @@ export default class Test extends Component {
                 return Promise.reject(error)
             }
         )
-        let response = await axios.get(`http://127.0.0.1:8000/api/students/tests`)
+        let response = await axios.get(`${process.env.REACT_APP_API_URL}/students/tests`)
         console.log(response.data)
         if (response.data.status === 'success') {
             this.setState({
-                tests: response.data.tests
+                tests: response.data.tests,
+                display: false
             })
         }
-    }
-    removeComponent = () => {
-        this.setState({
-            modal: []
-        })
-    }
-    questionsComponent = (value) => {
-
-        let modal = <Questions id={value} removeComponent={this.removeComponent} load={this.load} />
-
-        this.setState({
-            modal: modal
-        })
     }
     capitalize = (s) => {
         if (typeof s !== 'string') return ''
@@ -59,6 +48,13 @@ export default class Test extends Component {
                         </div>
                         <div className="row mt-3">
                             <div className="col-12">
+                            <div className="loading" style={{ display: this.state.display ? 'block' : 'none' }}>
+                                <div className="text-center">
+                                    <span>
+                                        Loading...
+                                    </span>
+                                </div>
+                            </div>
                                 <div className="table-responsive bg-white m-0 p-3 rounded shadow">
                                     <table class="table table-bordered m-0">
                                         <thead>
@@ -96,11 +92,7 @@ export default class Test extends Component {
                                                             {count}
                                                         </td>
                                                         <td className="btnTD text-center">
-                                                            {/* <button className="btn Btn32 btn-warning mx-1" data-toggle="modal" data-target="#uploadTestModal" onClick={() => this.addComponent(value)}><i class="fas fa-pencil-alt"></i></button> */}
-                                                            {/* <button className="btn Btn32 btn-info"><i class="far fa-eye"></i></button> */}
-                                                            <button className="btn Btn32 btn-success" data-toggle="modal" data-target="#questionsModal" onClick={() => this.questionsComponent(value.id)}><i class="fas fa-clipboard"></i></button>
-                                                            {/* <button className="btn Btn32 btn-danger" data-id={value.id} data-link="lesson" onClick={this.delete}><i class="fas fa-trash"></i></button> */}
-
+                                                            <Link to={`TestStart/${value.id}`} className="btn Btn32 btn-success"><i class="fas fa-play"></i></Link>
                                                         </td>
                                                     </tr>
                                                 )
@@ -118,9 +110,6 @@ export default class Test extends Component {
                         </div>
                     </div>
                 </div>
-                {
-                    this.state.modal
-                }
             </>
         )
     }

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Navbar,  Nav, Dropdown } from 'react-bootstrap';
 // import user1 from 'admin-lte/dist/img/user1-128x128.jpg'
 // import user8 from 'admin-lte/dist/img/user8-128x128.jpg'
 // import user3 from 'admin-lte/dist/img/user3-128x128.jpg'
 import axios from 'axios';
+import { Link } from "react-router-dom";
 import { NotificationContainer, NotificationManager } from 'react-notifications';
 import 'react-notifications/lib/notifications.css';
 import { SessionContext } from "../Context/Session";
@@ -16,11 +16,11 @@ export default class Header extends Component {
     constructor(props) {
         super(props)
         this.history = createHistory()
+        this.state = { notifications: 0, messages: 0 };
     }
     logout = async () => {
 
         let student = JSON.parse(localStorage.getItem('student'))
-        console.log(student.user)
         axios.interceptors.request.use(
             config => {
                 config.headers.authorization = `Bearer ${student.user.token}`;
@@ -31,7 +31,7 @@ export default class Header extends Component {
             }
         )
 
-        let response = await axios.post(`http://127.0.0.1:8000/api/logout`)
+        let response = await axios.post(`${process.env.REACT_APP_API_URL}/logout`)
         if (response.data.status === 'sign_out') {
             localStorage.removeItem('student')
             this.context.setSession(response.status, '')
@@ -42,54 +42,67 @@ export default class Header extends Component {
         }
 
     }
+        // componentDidMount = () => {
+    //     setInterval(async () => {
+    //         let userInfo = JSON.parse(localStorage.getItem('user-info'))
+    //         axios.interceptors.request.use(
+    //             config => {
+    //                 config.headers.authorization = `Bearer ${userInfo.user.token}`;
+    //                 return config;
+    //             },
+    //             error => {
+    //                 return Promise.reject(error)
+    //             }
+    //         )
+    
+    //         let messages = await axios.get(`${process.env.REACT_APP_API_URL}/managers/messages`)
+    //         let notifications = await axios.get(`${process.env.REACT_APP_API_URL}/notifications`)
+    //         if (messages.data.status === 'success') {
+    //                 this.setState({ messages: messages.data.count })
+    //         }
+    //         if (notifications.data.status === 'success') {
+    //             this.setState({ notifications: notifications.data.count })
+    //         }
+    //     }, 5000);
+    // }
     render() {
         return (
             <>
                 <NotificationContainer />
-                <Navbar bg="white" className="main-header navbar navbar-expand navbar-white navbar-light" expand="lg">
-                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                    <Navbar.Collapse id="basic-navbar-nav">
-                        <Nav className="mr-auto">
-                            <Nav.Link to="#" role="button" data-widget="pushmenu">
-                                <i className="fas fa-bars"></i>
-                            </Nav.Link>
-                        </Nav>
-                        <Nav className="ml-auto">
+                <nav className="main-header navbar navbar-expand navbar-white navbar-light">
+                    <ul className="navbar-nav">
+                        <li className="nav-item">
+                            <a className="nav-link" data-widget="pushmenu" href={'void(0)'}><i className="fas fa-bars"></i></a>
+                        </li>
+                    </ul>
 
-                            <Dropdown>
-                                <Dropdown.Toggle variant="none" id="dropdown-basic">
-                                    <i className="far fa-bell"></i>
-                                    <span className="badge badge-warning navbar-badge">15</span>
-                                </Dropdown.Toggle>
-
-                                <Dropdown.Menu className="dropdown-menu-lg">
-                                    <span className="dropdown-header">15 Notifications</span>
-                                    <div className="dropdown-divider"></div>
-                                    <Dropdown.Item href="#/action-1">
-                                        <i className="fas fa-envelope mr-2"></i> 4 new messages
-                                        <span className="float-right text-muted text-sm">3 mins</span>
-                                    </Dropdown.Item>
-                                    <div className="dropdown-divider"></div>
-                                    <Dropdown.Item href="#/action-2">
-                                        <i className="fas fa-users mr-2"></i> 8 friend requests
-                                        <span className="float-right text-muted text-sm">12 hours</span>
-                                    </Dropdown.Item>
-                                    <div className="dropdown-divider"></div>
-                                    <Dropdown.Item href="#/action-3">
-                                        <i className="fas fa-file mr-2"></i> 3 new reports
-                                        <span className="float-right text-muted text-sm">2 days</span>
-                                    </Dropdown.Item>
-                                    <div className="dropdown-divider"></div>
-                                    <Dropdown.Item href="#/action-3" className="dropdown-footer">See All Notifications</Dropdown.Item>
-                                </Dropdown.Menu>
-                            </Dropdown>
-
-                            <Nav.Link to="#" onClick={() => this.logout()}>
+                    <ul className="navbar-nav ml-auto">
+                        <li className="nav-item dropdown">
+                            <Link className="nav-link" to="Messages">
+                                <i className="far fa-comments"></i>
+                                <span className="badge badge-danger navbar-badge">{this.state.messages}</span>
+                            </Link>
+                        </li>
+                        <li className="nav-item dropdown">
+                            <Link className="nav-link" to="Notifications">
+                                <i className="far fa-bell"></i>
+                                <span className="badge badge-warning navbar-badge">{this.state.notifications}</span>
+                            </Link>
+                        </li>
+                        <li className="nav-item">
+                            <span className="nav-link" onClick={(e) => this.logout(e)} style={{ cursor: 'pointer' }}>
                                 Sign out
-                            </Nav.Link>
-                        </Nav>
-                    </Navbar.Collapse>
-                </Navbar>
+                            </span>
+                        </li>
+                        {/* <li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button"><i
+                                    class="fas fa-th-large"></i></a>
+                            </li>
+                        </li> */}
+                    </ul>
+
+                </nav>
             </>
         )
     }

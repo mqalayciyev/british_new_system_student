@@ -5,29 +5,6 @@ import { Link, useLocation } from "react-router-dom";
 
 function Sidebar(params) {
 
-    const [count, setCount] = useState();
-
-    // useEffect(() => {
-    //     setInterval(async function () {
-
-    //         let student = JSON.parse(localStorage.getItem('student'))
-    //         axios.interceptors.request.use(
-    //             config => {
-    //                 config.headers.authorization = `Bearer ${student.user.token}`;
-    //                 return config;
-    //             },
-    //             error => {
-    //                 return Promise.reject(error)
-    //             }
-    //         )
-    //         let response = await axios.get(`http://127.0.0.1:8000/api/students/count-messages`)
-
-    //         if (response.data.status === 'success') {
-    //             setCount(response.data.count)
-    //         }
-    //     }, 60000);
-    // });
-
     const location = useLocation();
 
     const { pathname } = location;
@@ -43,10 +20,10 @@ function Sidebar(params) {
     return (
         <aside className="main-sidebar sidebar-dark-primary elevation-4">
 
-            <div className="sidebar">
+            <div className="sidebar" style={{ overflowY: 'auto' }}>
                 <div className="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div className="image">
-                        <img src={student.user.user_info.image ? student.user.user_info.image : img} className="img-circle elevation-2" alt="user" />
+                        <img src={student.user.user_info.image ?  process.env.REACT_APP_URL + '/' + student.user.user_info.image : img} className="img-circle elevation-2" alt="user" />
                         {/* <img src="{user2}" className="img-circle elevation-2" alt="user" /> */}
                     </div>
                     <div className="info">
@@ -66,7 +43,7 @@ function Sidebar(params) {
                             <Link to="/Messages" className={splitLocation[1] === "Messages" ? "nav-link active" : "nav-link"}>
                                 <i className="nav-icon far fa-envelope"></i>
                                 <p>
-                                    Messages {count ? <span className="badge badge-danger">{count}</span> : ''}
+                                    Messages
                                 </p>
                             </Link>
                         </li>
@@ -123,9 +100,15 @@ function Sidebar(params) {
                                     </Link>
                                 </li>
                                 <li className="nav-item">
-                                    <Link to="/TestScores" className={splitLocation[1] === "TestScores" ? "nav-link active" : "nav-link"}>
+                                    <Link to="/TestResults" className={splitLocation[1] === "TestResults" ? "nav-link active" : "nav-link"}>
                                         <i className="far fa-circle nav-icon"></i>
-                                        <p>Test scores</p>
+                                        <p>Test results</p>
+                                    </Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link to="/ExamResults" className={splitLocation[1] === "ExamResults" ? "nav-link active" : "nav-link"}>
+                                        <i className="far fa-circle nav-icon"></i>
+                                        <p>Exam results</p>
                                     </Link>
                                 </li>
                                 <li className="nav-item">
@@ -183,6 +166,14 @@ function Sidebar(params) {
                                     </Link>
                                 </li>
                             </ul>
+                        </li>
+                        <li className="nav-item">
+                            <Link to="/Notifications" className={splitLocation[1] === "Notifications" ? "nav-link active" : "nav-link"}> 
+                                <i className="nav-icon far fa-bell"></i>
+                                <p>
+                                Notifications
+                                </p>
+                            </Link>
                         </li>
                     </ul>
                 </nav>

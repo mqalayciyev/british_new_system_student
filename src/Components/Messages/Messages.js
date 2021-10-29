@@ -12,7 +12,7 @@ import 'react-notifications/lib/notifications.css';
 export default class Messages extends Component {
     constructor(props) {
         super(props)
-        this.state = { messages: [], myid: 0};
+        this.state = { myid: 0, display: true};
     }
     componentDidMount = () => {
         this.load()
@@ -29,11 +29,13 @@ export default class Messages extends Component {
                 return Promise.reject(error)
             }
         )
-        let response = await axios.get(`http://127.0.0.1:8000/api/students/messages`)
+        let response = await axios.get(`${process.env.REACT_APP_API_URL}/students/messages`)
         if(response.data.status === 'success'){
             // console.log(response.data.messages)
             this.setState({
-                messages: response.data.messages
+				messages: response.data.messages,
+                count: response.data.count,
+                display: false
             })
         }
         
@@ -49,7 +51,7 @@ export default class Messages extends Component {
                 return Promise.reject(error)
             }
         )
-        let response = await axios.delete(`http://127.0.0.1:8000/api/managers/messages/${id}`)
+        let response = await axios.delete(`${process.env.REACT_APP_API_URL}/managers/messages/${id}`)
 
 
         if (response.data.status === 'success') {
@@ -60,19 +62,25 @@ export default class Messages extends Component {
     message = (messages) => {
         let collection = []
         let include = []
+        let status = []
         for (let value of Object.values(messages)) {
-            console.log(value.message)
+            if(value.receiving === this.state.myid){
+                if(value.status === 0){
+                    if(!status.includes(value.sender)){
+                        status.push(value.sender)
+                    }
+                }
+            }
 
             // return value.message
 
             if (value.sender !== this.state.myid) {
-                let status = value.status ? 1 : 0;
                 if(!include.includes(value.sender)){
                     include.push(value.sender)
                     collection.push(
-                        <tr className={status ? '' : 'bg-warning'}>
+                        <tr className={status.includes(value.sender) ? 'bg-warning' : ''}>
                             <td>
-                                <img className="rounded-circle h-100 w-100" style={{ maxWidth: '60px', maxHeight: '60px' }} src={value.user1_image ? value.user1_image : img} alt='account' />
+                                <img className="rounded-circle h-100 w-100" style={{ maxWidth: '60px', maxHeight: '60px' }} src={value.user1_image ? process.env.REACT_APP_URL + '/' + value.user1_image : img} alt='account' />
                                 {value.image}
                             </td>
                             <td>
@@ -94,14 +102,13 @@ export default class Messages extends Component {
                 }
             }
             else if (value.receiving !== this.state.myid) {
-                let status = value.status ? 1 : 0;
                 if(!include.includes(value.receiving)){
                     include.push(value.receiving)
 
                     collection.push(
-                        <tr className={status ? '' : 'bg-warning'}>
+                        <tr >
                             <td>
-                                <img className="rounded-circle h-100 w-100" style={{ maxWidth: '60px', maxHeight: '60px' }} src={value.user2_image ? value.user2_image : img} alt='account' />
+                                <img className="rounded-circle h-100 w-100" style={{ maxWidth: '60px', maxHeight: '60px' }} src={value.user2_image ? process.env.REACT_APP_URL + '/' + value.user2_image : img} alt='account' />
                                 {value.image}
                             </td>
                             <td>
@@ -144,11 +151,18 @@ export default class Messages extends Component {
 					</div>
                     <div className="row">
                         <div className="col-12">
+						<div className="loading" style={{ display: this.state.display ? 'block' : 'none', top: '20px' }}>
+                            <div className="text-center">
+                                <span>
+                                    Loading...
+                                </span>
+                            </div>
+                        </div>
                             <div className="table-responsive bg-white m-0 p-3 rounded shadow">
                                 <table className="table table-bordered m-0">
                                     <tbody>
                                     {
-                                            this.state.messages.length > 0 ? this.message(this.state.messages) : <tr><td colSpan="12" className="text-center">Empty</td></tr>
+                                            this.state.messages ? this.message(this.state.messages) : <tr><td colSpan="12" className="text-center">Empty</td></tr>
                                         }
                                     </tbody>
                                 </table>
